@@ -23,6 +23,7 @@ __Note that the ones in bold have formal writeups available; those that do not j
 * [__InsomnicHack 2016 Teaser__](online_ctfs/insomnihack_2016/)
 * [__Internetwache 2016__](online_ctfs/internetwache_2016/)
 * [__SECCON 2015__](online_ctfs/seccon_2015/)
+* [__QIWI InfoSEC CTF 2016__](online_ctfs/qiwi_infosec_ctf_2016/)
 * [ABCTF](online_ctfs/abctf/)
 * [ALICTF](online_ctfs/alictf/)
 * [ASIS CTF](online_ctfs/asisctf)

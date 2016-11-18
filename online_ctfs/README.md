@@ -17,6 +17,7 @@ The following is a list of different online competitions that we have participat
 * [HackIM 2016](hackim/)
 * [Internetwache CTF](internetwache/)
 * [EKOPARTY 2016 CTF](ekoparty_2016/)
+* [QIWI InfoSEC CTF 2016](qiwi_infosec_ctf_2016/)
 
 [CTF]: https://en.wikipedia.org/wiki/Capture_the_flag#Computer_security
 [Cyberstakes]: https://cyberstakesonline.com/
