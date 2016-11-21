@@ -1,49 +1,47 @@
-QIWI InfoSEC CTF 2016
+PPC 100_2
 ========
 
-> John Hammond | Friday, November 18th, 2016
+> John Hammond | Monday, November 21st, 2016
 
 --------------------------------------------
 
-The purpose of this directory and its sub-directories is to contain any information regarding challenges that we as a Cyber Team solved while participating in the online competition [QIWI InfoSEC CTF 2016].
+> Those spies learned in university that prime numbers are essential for cryptography. Unfortunately, they got in wrong. 
 
-The hope with this repository and this specific directory is that users will have a place to post resources, scripts, solution writeups, and any other material that may relate to solving some challenges. If a problem does not have some of your input, whether or not it some code or even a full-blown writeup and solution, feel free to add something!
+This archive was a bunch of text files, with a filename of a number. The task was to determine if the filename was really a prime number or not. I used [`primefac`][primefac] to do this really quickly.
 
----------------------------
-
-Summary
--------
-
-> Thu, 17 Nov. 2016, 07:00 UTC — Fri, 18 Nov. 2016, 15:00 UTC 
-> 
-> On-line
-> 
-> A QIWI CTF event.
-> 
-> Format: Jeopardy Jeopardy
-> 
-> Official URL: https://qiwictf.ru/
-> 
-> Event organizers 
->
->    Special Research Team
-
-------------
-
-Only myself and Sam took a look at this [CTF], and we finished _166th_ out of 234 players who had a presence on the scoreboard (over 500+ registered, but the stragglers had not solved a challenge). I solved only two challenges, but then proceeded to solve three more at the end of the competition. Considering it was during the work-week, it was clear we would not be able to dedicate much time to the game.
+The flag turned out to be the concatenation of all of the file contents that did actually have a prime number as their filename.
 
 
-Challenges
-----------
+``` python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# @Author: John Hammond
+# @Date:   2016-11-17 14:44:20
+# @Last Modified by:   John Hammond
+# @Last Modified time: 2016-11-21 00:41:16
 
-The following is a list of challenges that we successfully completed as part of the [QIWI InfoSEC CTF 2016] competition.
+import primefac
+from glob import glob
+import os
 
-__Note that bolded items have a solution added; regular entries _do not_.__
+os.chdir('encrypted')
 
-* [__crypto 100 3__](crypto_100_3_COMPLETE/)
-* [__reverse 100 2__](reverse_100_2_COMPLETE/)
-* [__ppc 100 1__](ppc_100_1_COMPLETE/)
-* [__ppc 100 2__](ppc_100_2_COMPLETE/)
+files = sorted(glob('*'))
+
+primes = []
+
+for file in files:
+    number = int(file)
+    if ( primefac.isprime(number) ):
+        primes.append( open(file).read().replace('\n','') )
+
+print ''.join([ str(z) for z in primes])
+```
+
+The flag turned out to be:
+
+
+__`c93c0f30299130cde942fce8ec5dd0b3012dcfa478a4ab2314ee525098fb779e2812d6731d372bae6d71e220a6`__
 
 [netcat]: https://en.wikipedia.org/wiki/Netcat
 [Wikipedia]: https://www.wikipedia.org/
@@ -374,5 +372,14 @@ __Note that bolded items have a solution added; regular entries _do not_.__
 [vignere cipher]: https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher
 [substitution cipher]: https://en.wikipedia.org/wiki/Substitution_cipher
 [DNA]: https://en.wikipedia.org/wiki/Nucleic_acid_sequence
-[QIWI InfoSEC CTF 2016]: https://ctftime.org/event/385
-[CTF]: https://en.wikipedia.org/wiki/Capture_the_flag#Computer_security
+[Python bytecode]: http://security.coverity.com/blog/2014/Nov/understanding-python-bytecode.html
+[uncompyle]: https://github.com/gstarnberger/uncompyle
+[Easy Python Decompiler]: https://github.com/aliansi/Easy-Python-Decompiler-v1.3.2
+[marshal]: https://docs.python.org/2/library/marshal.html
+[IDLE]: https://en.wikipedia.org/wiki/IDLE
+[bytecode]: http://whatis.techtarget.com/definition/bytecode
+[dis]: https://docs.python.org/2/library/dis.html
+[rot13]: https://en.wikipedia.org/wiki/ROT13
+[calendar]: https://docs.python.org/2/library/calendar.html
+[datetime]: https://docs.python.org/2/library/datetime.html
+[primefac]: https://pypi.python.org/pypi/primefac
