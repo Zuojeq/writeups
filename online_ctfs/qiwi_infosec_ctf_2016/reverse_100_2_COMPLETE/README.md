@@ -1,47 +1,134 @@
-QIWI InfoSEC CTF 2016
+Reverse 100_2
 ========
 
-> John Hammond | Friday, November 18th, 2016
+> John Hammond | Monday, November 21st, 2016
 
 --------------------------------------------
 
-The purpose of this directory and its sub-directories is to contain any information regarding challenges that we as a Cyber Team solved while participating in the online competition [QIWI InfoSEC CTF 2016].
+> I have a snake. Crack me!
 
-The hope with this repository and this specific directory is that users will have a place to post resources, scripts, solution writeups, and any other material that may relate to solving some challenges. If a problem does not have some of your input, whether or not it some code or even a full-blown writeup and solution, feel free to add something!
+So we are given a [`task.pyc`](task.pyc) file, which is [Python bytecode]. We can decompile this with a lot of tools, the most common being [`uncomplye`][uncompyle] and [Easy Python Decompiler]. During the competition, I used [Easy Python Decompiler]. This created a file for me called [`task.pyc_dis`](task.pyc_dis)
 
----------------------------
+``` python
+# Embedded file name: task.py
+import marshal
+src = 'YwAAAAADAAAAGAAAAEMAAABz7wAAAGQBAGoAAGcAAGQCAGQDAGQEAGQFAGQGAGQHAGQIAGQJAGQKAGQLAGQMAGQNAGQOAGQPAGQMAGcPAERdHAB9AAB0AQB0AgB8AACDAQBkEAAXgwEAXgIAcToAgwEAfQEAdAMAZBEAgwEAfQIAfAIAfAEAawIAcuYAZAEAagAAZwAAZBIAZBMAZBQAZBUAZBYAZBcAZBgAZBkAZBoAZBsAZBwAZB0AZB4AZAsAZBwAZB8AZAMAZB0AZAgAZB4AZCAAZCEAZxYARF0VAH0AAHwAAGoEAGQiAIMBAF4CAHHGAIMBAEdIbgUAZCMAR0hkAABTKCQAAABOdAAAAAB0AQAAAF50AQAAADR0AQAAAEt0AQAAAGl0AQAAAC50AQAAAC90AQAAAE50AQAAAGp0AQAAAFB0AQAAAG90AQAAAD90AQAAAGx0AQAAADJ0AQAAAFRpAwAAAHMJAAAAWW91IHBhc3M6dAEAAABzdAEAAAB5dAEAAABudAEAAAB0dAEAAAA6dAEAAAB7dAEAAAB3dAEAAABxdAEAAABFdAEAAAA2dAEAAABmdAEAAABYdAEAAAB1dAEAAABhdAEAAAAxdAEAAAB9dAUAAABST1QxM3MFAAAATm8gOigoBQAAAHQEAAAAam9pbnQDAAAAY2hydAMAAABvcmR0CQAAAHJhd19pbnB1dHQGAAAAZGVjb2RlKAMAAAB0AQAAAGV0AwAAAHRtcHQGAAAAcGFzc3dkKAAAAAAoAAAAAHMHAAAAdGFzay5weVIcAAAAAgAAAHMKAAAAAAFfAQwBDAFvAQ=='.decode('base64')
+code = marshal.loads(src)
+exec code
+```
 
-Summary
--------
+We can take a look at the file and see that it uses the [Python][Python] [marshal] module to serialize some [Python] objects, which is originally [base64] encoded. If we wanted to, we could decode this and recreate the code as we needed to.
 
-> Thu, 17 Nov. 2016, 07:00 UTC — Fri, 18 Nov. 2016, 15:00 UTC 
-> 
-> On-line
-> 
-> A QIWI CTF event.
-> 
-> Format: Jeopardy Jeopardy
-> 
-> Official URL: https://qiwictf.ru/
-> 
-> Event organizers 
->
->    Special Research Team
+If you do this (perhaps within [IDLE]) and you get to create your `code` object, you can interact with it! It is a ton of [Python bytecode]. You can explore it completely with `dir(code)`, and from that, things like `code.co_consts` and `code.co_varnames` and more. 
 
-------------
+If you check out the `code.co_varnames`, you should see the object has a variable named `passwd`.
 
-Only myself and Sam took a look at this [CTF], and we finished _166th_ out of 234 players who had a presence on the scoreboard (over 500+ registered, but the stragglers had not solved a challenge). I solved only two challenges, but then proceeded to solve three more at the end of the competition. Considering it was during the work-week, it was clear we would not be able to dedicate much time to the game.
+We want to get to the value of that variable, right? 
+
+Honestly I don't know a way to get it directly... but we can "disassemble" the [bytecode] and try and reverse engineer it. We can do this for [Python] code with the [`dis`][dis] module.
+
+`dis.dis(code)` should give you an [Assembly]-like output. 
 
 
-Challenges
-----------
+```
+  3           0 LOAD_CONST               1 ('')
+              3 LOAD_ATTR                0 (join)
+              6 BUILD_LIST               0
+              9 LOAD_CONST               2 ('^')
+             12 LOAD_CONST               3 ('4')
+             15 LOAD_CONST               4 ('K')
+             18 LOAD_CONST               5 ('i')
+             21 LOAD_CONST               6 ('.')
+             24 LOAD_CONST               7 ('/')
+             27 LOAD_CONST               8 ('N')
+             30 LOAD_CONST               9 ('j')
+             33 LOAD_CONST              10 ('P')
+             36 LOAD_CONST              11 ('o')
+             39 LOAD_CONST              12 ('?')
+             42 LOAD_CONST              13 ('l')
+             45 LOAD_CONST              14 ('2')
+             48 LOAD_CONST              15 ('T')
+             51 LOAD_CONST              12 ('?')
+             54 BUILD_LIST              15
+             57 GET_ITER            
+        >>   58 FOR_ITER                28 (to 89)
+             61 STORE_FAST               0 (e)
+             64 LOAD_GLOBAL              1 (chr)
+             67 LOAD_GLOBAL              2 (ord)
+             70 LOAD_FAST                0 (e)
+             73 CALL_FUNCTION            1
+             76 LOAD_CONST              16 (3)
+             79 BINARY_ADD          
+             80 CALL_FUNCTION            1
+             83 LIST_APPEND              2
+             86 JUMP_ABSOLUTE           58
+        >>   89 CALL_FUNCTION            1
+             92 STORE_FAST               1 (tmp)
 
-The following is a list of challenges that we successfully completed as part of the [QIWI InfoSEC CTF 2016] competition.
+  4          95 LOAD_GLOBAL              3 (raw_input)
+             98 LOAD_CONST              17 ('You pass:')
+            101 CALL_FUNCTION            1
+            104 STORE_FAST               2 (passwd)
 
-__Note that bolded items have a solution added; regular entries _do not_.__
+  5         107 LOAD_FAST                2 (passwd)
+            110 LOAD_FAST                1 (tmp)
+            113 COMPARE_OP               2 (==)
+            116 POP_JUMP_IF_FALSE      230
 
-* [__crypto 100 3__](crypto_100_3_COMPLETE/)
-* [__reverse 100 2__](reverse_100_2_COMPLETE/)
+  6         119 LOAD_CONST               1 ('')
+            122 LOAD_ATTR                0 (join)
+            125 BUILD_LIST               0
+            128 LOAD_CONST              18 ('s')
+            131 LOAD_CONST              19 ('y')
+            134 LOAD_CONST              20 ('n')
+            137 LOAD_CONST              21 ('t')
+            140 LOAD_CONST              22 (':')
+            143 LOAD_CONST              23 ('{')
+            146 LOAD_CONST              24 ('w')
+            149 LOAD_CONST              25 ('q')
+            152 LOAD_CONST              26 ('E')
+            155 LOAD_CONST              27 ('6')
+            158 LOAD_CONST              28 ('f')
+            161 LOAD_CONST              29 ('X')
+            164 LOAD_CONST              30 ('u')
+            167 LOAD_CONST              11 ('o')
+            170 LOAD_CONST              28 ('f')
+            173 LOAD_CONST              31 ('a')
+            176 LOAD_CONST               3 ('4')
+            179 LOAD_CONST              29 ('X')
+            182 LOAD_CONST               8 ('N')
+            185 LOAD_CONST              30 ('u')
+            188 LOAD_CONST              32 ('1')
+            191 LOAD_CONST              33 ('}')
+            194 BUILD_LIST              22
+            197 GET_ITER            
+        >>  198 FOR_ITER                21 (to 222)
+            201 STORE_FAST               0 (e)
+            204 LOAD_FAST                0 (e)
+            207 LOAD_ATTR                4 (decode)
+            210 LOAD_CONST              34 ('ROT13')
+            213 CALL_FUNCTION            1
+            216 LIST_APPEND              2
+            219 JUMP_ABSOLUTE          198
+        >>  222 CALL_FUNCTION            1
+            225 PRINT_ITEM          
+            226 PRINT_NEWLINE       
+            227 JUMP_FORWARD             5 (to 235)
+
+  7     >>  230 LOAD_CONST              35 ('No :(')
+            233 PRINT_ITEM          
+            234 PRINT_NEWLINE       
+        >>  235 LOAD_CONST               0 (None)
+            238 RETURN_VALUE        
+```
+
+Check it out, this should be easy enough to read; you can see that it joins a ton of characters, and then compares them with your input. That joined string must be the flag! 
+
+And, we can see a 'ROT13' notion in the disassembly. Is that string [rot13]-ed?
+
+Sure enough, if you compile and create the string `synt:{wqE6fXuofa4XNu1}` and then [rot13] it, you will get...
+
+__`flag:{jdR6sKhbsn4KAh1}`__
 
 [netcat]: https://en.wikipedia.org/wiki/Netcat
 [Wikipedia]: https://www.wikipedia.org/
@@ -372,5 +459,11 @@ __Note that bolded items have a solution added; regular entries _do not_.__
 [vignere cipher]: https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher
 [substitution cipher]: https://en.wikipedia.org/wiki/Substitution_cipher
 [DNA]: https://en.wikipedia.org/wiki/Nucleic_acid_sequence
-[QIWI InfoSEC CTF 2016]: https://ctftime.org/event/385
-[CTF]: https://en.wikipedia.org/wiki/Capture_the_flag#Computer_security
+[Python bytecode]: http://security.coverity.com/blog/2014/Nov/understanding-python-bytecode.html
+[uncompyle]: https://github.com/gstarnberger/uncompyle
+[Easy Python Decompiler]: https://github.com/aliansi/Easy-Python-Decompiler-v1.3.2
+[marshal]: https://docs.python.org/2/library/marshal.html
+[IDLE]: https://en.wikipedia.org/wiki/IDLE
+[bytecode]: http://whatis.techtarget.com/definition/bytecode
+[dis]: https://docs.python.org/2/library/dis.html
+[rot13]: https://en.wikipedia.org/wiki/ROT13
