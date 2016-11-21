@@ -3,11 +3,10 @@
 # @Author: John Hammond
 # @Date:   2016-11-17 14:17:34
 # @Last Modified by:   John Hammond
-# @Last Modified time: 2016-11-17 14:39:44
+# @Last Modified time: 2016-11-21 00:34:56
 
 from glob import glob
 import datetime
-import calendar
 import calendar
 
 # get an array of all the files
@@ -15,8 +14,6 @@ files = glob('*.txt')
 
 # create  a reverse lookup table for month names and their corresponding number
 calendars = dict((v,k) for k,v in enumerate(calendar.month_abbr))
-
-
 
 for file in files:
 

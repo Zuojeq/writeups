@@ -1,48 +1,65 @@
-QIWI InfoSEC CTF 2016
+PPC 100_1
 ========
 
-> John Hammond | Friday, November 18th, 2016
+> John Hammond | Monday, November 21st, 2016
 
 --------------------------------------------
 
-The purpose of this directory and its sub-directories is to contain any information regarding challenges that we as a Cyber Team solved while participating in the online competition [QIWI InfoSEC CTF 2016].
+> We received messages with dates of creation. Our channel was unsafe and along with correct messages we received ones with wrong timestamps - you need to filter them. 
 
-The hope with this repository and this specific directory is that users will have a place to post resources, scripts, solution writeups, and any other material that may relate to solving some challenges. If a problem does not have some of your input, whether or not it some code or even a full-blown writeup and solution, feel free to add something!
+This archive was a bunch of text files, with a filename of a date and weekday. The idea was to verify that each date actually had the correct weekday. This could be done really easily in [Python], with the the [`calendar`][calendar] and [`datetime`][datetime] modules.
 
----------------------------
-
-Summary
--------
-
-> Thu, 17 Nov. 2016, 07:00 UTC — Fri, 18 Nov. 2016, 15:00 UTC 
-> 
-> On-line
-> 
-> A QIWI CTF event.
-> 
-> Format: Jeopardy Jeopardy
-> 
-> Official URL: https://qiwictf.ru/
-> 
-> Event organizers 
->
->    Special Research Team
-
-------------
-
-Only myself and Sam took a look at this [CTF], and we finished _166th_ out of 234 players who had a presence on the scoreboard (over 500+ registered, but the stragglers had not solved a challenge). I solved only two challenges, but then proceeded to solve three more at the end of the competition. Considering it was during the work-week, it was clear we would not be able to dedicate much time to the game.
+You can extract the original [`messages.tar.gz`](messages.tar.gz) with `gunzip messages.tar.gz` and `tar xf messages.tar`.
 
 
-Challenges
-----------
+``` python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# @Author: John Hammond
+# @Date:   2016-11-17 14:17:34
+# @Last Modified by:   John Hammond
+# @Last Modified time: 2016-11-21 00:34:56
 
-The following is a list of challenges that we successfully completed as part of the [QIWI InfoSEC CTF 2016] competition.
+from glob import glob
+import datetime
+import calendar
 
-__Note that bolded items have a solution added; regular entries _do not_.__
+# get an array of all the files
+files = glob('*.txt')
 
-* [__crypto 100 3__](crypto_100_3_COMPLETE/)
-* [__reverse 100 2__](reverse_100_2_COMPLETE/)
-* [__ppc 100 2__](ppc_100_1_COMPLETE/)
+# create  a reverse lookup table for month names and their corresponding number
+calendars = dict((v,k) for k,v in enumerate(calendar.month_abbr))
+
+for file in files:
+
+    # strip out the files from 
+    weekday, day, month, year = file.replace('.txt', '').split('_')
+    day = int(day)
+    year = int(year)
+
+    # get the number for the month name...
+    month = calendars[month[:3]]
+
+    # create a datetime object so we can easily find the real weekday
+    date = datetime.datetime( year, month, day )
+    actual_day = calendar.day_name[date.weekday()]
+
+    '''
+    after comparing the actual day with the weekday, almost all of them
+    have the wrong weekday
+    '''
+
+    # the flag must be in the only one that actually have the correct weekday
+    if ( actual_day == weekday ):
+        print open(file).read()[:-1]  # ... this is the flag!
+                                      # 4eec2cd9e4bb0062d0e41c8af1bd8a0f
+        exit()
+
+```
+
+After some testing with it, I could see that there was only file that had a correct weekday and date. The contents of that one file was the flag.
+
+__`4eec2cd9e4bb0062d0e41c8af1bd8a0f`__
 
 [netcat]: https://en.wikipedia.org/wiki/Netcat
 [Wikipedia]: https://www.wikipedia.org/
@@ -373,5 +390,13 @@ __Note that bolded items have a solution added; regular entries _do not_.__
 [vignere cipher]: https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher
 [substitution cipher]: https://en.wikipedia.org/wiki/Substitution_cipher
 [DNA]: https://en.wikipedia.org/wiki/Nucleic_acid_sequence
-[QIWI InfoSEC CTF 2016]: https://ctftime.org/event/385
-[CTF]: https://en.wikipedia.org/wiki/Capture_the_flag#Computer_security
+[Python bytecode]: http://security.coverity.com/blog/2014/Nov/understanding-python-bytecode.html
+[uncompyle]: https://github.com/gstarnberger/uncompyle
+[Easy Python Decompiler]: https://github.com/aliansi/Easy-Python-Decompiler-v1.3.2
+[marshal]: https://docs.python.org/2/library/marshal.html
+[IDLE]: https://en.wikipedia.org/wiki/IDLE
+[bytecode]: http://whatis.techtarget.com/definition/bytecode
+[dis]: https://docs.python.org/2/library/dis.html
+[rot13]: https://en.wikipedia.org/wiki/ROT13
+[calendar]: https://docs.python.org/2/library/calendar.html
+[datetime]: https://docs.python.org/2/library/datetime.html
