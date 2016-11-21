@@ -42,7 +42,7 @@ __Note that bolded items have a solution added; regular entries _do not_.__
 
 * [__crypto 100 3__](crypto_100_3_COMPLETE/)
 * [__reverse 100 2__](reverse_100_2_COMPLETE/)
-* [__ppc 100 2__](ppc_100_1_COMPLETE/)
+* [__ppc 100 1__](ppc_100_1_COMPLETE/)
 
 [netcat]: https://en.wikipedia.org/wiki/Netcat
 [Wikipedia]: https://www.wikipedia.org/
